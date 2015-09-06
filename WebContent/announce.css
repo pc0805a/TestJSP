@@ -9,6 +9,7 @@
 }
 
 .button {
+	margin: 10px;
 	-moz-box-shadow: 9px 13px 25px -11px #276873;
 	-webkit-box-shadow: 9px 13px 25px -11px #276873;
 	box-shadow: 9px 13px 25px -11px #276873;

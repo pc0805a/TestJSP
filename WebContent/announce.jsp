@@ -9,7 +9,21 @@
 <title>診間叫號</title>
 </head>
 
+<script>
+	function do_hidden() {
+		var table = document.getElementById('p_list');
+		var btn = document.getElementById('button_hidden');
 
+		if (btn.value == "隱藏") {
+			table.style.display = "none";
+			btn.value = "顯示";
+		} else {
+			table.style.display = "";
+			btn.value = "隱藏";
+		}
+
+	}
+</script>
 
 <body>
 	<div style="text-align: center;">
@@ -21,7 +35,8 @@
 		<p style="font-size: 25px">主治醫生:</p>
 	</div>
 
-	<div style="text-align: center; margin: 20px;"><!--開始看診控制區塊-->
+	<div style="text-align: center; margin: 20px;">
+		<!--開始看診控制區塊-->
 		<form action="clinicStatus.jsp" method="post">
 			<input type="hidden" name="c_flag" value=0>
 			<%
@@ -37,8 +52,9 @@
 			%>
 		</form>
 	</div>
-	
-	<div style="text-align: center; margin: 20px;"><!--控制叫號區塊-->
+
+	<div style="text-align: center; margin: 20px; display: inline;">
+		<!--控制叫號區塊-->
 		<form action="clinicStatus.jsp" method="post">
 			<input type="hidden" name="c_flag" value=1>
 			<%
@@ -52,37 +68,59 @@
 			%>
 		</form>
 	</div>
-	
-	<div style="text-align: center; margin: 20px;"><!--叫號歸0-->
-		<form action="clinicStatus.jsp" method="post">
-			<input type="hidden" name="c_flag" value=-1>
-			<%
-				query = "select * from test.clinic;";
-				rs = stmt.executeQuery(query);
-				rs.next();
-
-				if (rs.getInt("status") == 0) {
-					out.println("<input type=\"submit\" value=\"號碼歸0\" class=\"button\" />");
-				}
-			%>
-		</form>
-	</div>
 
 
-	<div style="text-align: center;"><!--現在號碼區塊-->
+	<!--過號-->
+	<%
+		query = "select * from test.clinic;";
+		rs = stmt.executeQuery(query);
+		rs.next();
+
+		if (rs.getInt("status") == 1) {
+			out.println("<div style=\"text-align: center; margin: 20px;\">");
+			out.println("<form action=\"clinicStatus.jsp\" method=\"post\">");
+			out.println("<input type=\"hidden\" name=\"c_flag\" value=3>");
+			out.println("<input type=\"submit\" value=\"過號\" class=\"button\">");
+			out.println("</form>");
+			out.println("</div>");
+		}
+	%>
+
+
+	<!--叫號歸0-->
+	<%
+		query = "select * from test.clinic;";
+		rs = stmt.executeQuery(query);
+		rs.next();
+
+		if (rs.getInt("status") == 0) {
+			out.println("<div style=\"text-align: center; margin: 20px;\">");
+			out.println("<form action=\"clinicStatus.jsp\" method=\"post\">");
+			out.println("<input type=\"hidden\" name=\"c_flag\" value=-1>");
+			out.println("<input type=\"submit\" value=\"號碼歸0\" class=\"button\">");
+			out.println("</form>");
+			out.println("</div>");
+		}
+	%>
+
+
+
+	<div style="text-align: center;">
+		<!--現在號碼區塊-->
 		<p style="font-size: 25px">現在號碼</p>
 		<%
 			query = "select * from test.clinic;";
 			rs = stmt.executeQuery(query);
 			rs.next();
-			
+
 			int p_no = rs.getInt("p_no");
-			
+
 			out.println("<p style=\"font-size: 25px\">" + p_no + "號</p>");
 		%>
 	</div>
-	
-	<div style="text-align: center;"><!--現在病人資訊-->
+
+	<div style="text-align: center;">
+		<!--現在病人資訊-->
 		<p style="font-size: 25px">現在病人</p>
 		<table class="table_form" rules="all">
 			<tr>
@@ -94,76 +132,80 @@
 				<td width="5%">性別</td>
 				<td width="5%">狀態</td>
 			</tr>
-			
+
 			<%
-					query = "select * from test.register where no =\"" + p_no+"\";";
-				
-					stmt = conn.createStatement();
-					rs = stmt.executeQuery(query);
-					while (rs.next()) {
+				query = "select * from test.register where no =\"" + p_no + "\";";
 
-						if (rs.getInt("status") != 0) {
-							out.print("<tr>");
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(query);
+				while (rs.next()) {
 
-							out.print("<td>" + rs.getInt("no") + "</td>");
-							out.print("<td>" + rs.getString("name") + "</td>");
-							out.print("<td>" + rs.getString("id") + "</td>");
-							out.print("<td>" + rs.getString("b_year") + "\t年\t" + rs.getString("b_month") + "\t月\t"
-									+ rs.getString("b_day") + "\t日" + "</td>");
+					if (rs.getInt("status") != 0) {
+						out.print("<tr>");
 
-							//out.print("<td>" + rs.getInt("blood_type") + "</td>");
+						out.print("<td>" + rs.getInt("no") + "</td>");
+						out.print("<td>" + rs.getString("name") + "</td>");
+						out.print("<td>" + rs.getString("id") + "</td>");
+						out.print("<td>" + rs.getString("b_year") + "\t年\t" + rs.getString("b_month") + "\t月\t"
+								+ rs.getString("b_day") + "\t日" + "</td>");
 
-							switch (rs.getInt("blood_type")) {
-							case 1:
-								out.print("<td>" + "A" + "</td>");
-								break;
-							case 2:
-								out.print("<td>" + "B" + "</td>");
-								break;
-							case 3:
-								out.print("<td>" + "O" + "</td>");
-								break;
-							case 4:
-								out.print("<td>" + "AB" + "</td>");
-								break;
-							}
+						//out.print("<td>" + rs.getInt("blood_type") + "</td>");
 
-							//out.print("<td>" + rs.getInt("gender") + "</td>");
-
-							if (rs.getInt("gender") == 1)
-								out.print("<td>" + "男" + "</td>");
-							else
-								out.print("<td>" + "女" + "</td>");
-
-							//out.print("<td>" + rs.getInt("arrival") + "</td>");
-
-							switch (rs.getInt("status")) {
-							case 0:
-								out.print("<td>" + "未掛號" + "</td>");
-								break;
-							case 1:
-								out.print("<td>" + "尚未報到" + "</td>");
-								break;
-							case 2:
-								out.print("<td>" + "已報到" + "</td>");
-								break;
-							case 3:
-								out.print("<td>" + "看診完畢" + "</td>");
-								break;
-							case 4:
-								out.print("<td>" + "過號" + "</td>");
-								break;
-							}
+						switch (rs.getInt("blood_type")) {
+						case 1:
+							out.print("<td>" + "A" + "</td>");
+							break;
+						case 2:
+							out.print("<td>" + "B" + "</td>");
+							break;
+						case 3:
+							out.print("<td>" + "O" + "</td>");
+							break;
+						case 4:
+							out.print("<td>" + "AB" + "</td>");
+							break;
 						}
 
+						//out.print("<td>" + rs.getInt("gender") + "</td>");
+
+						if (rs.getInt("gender") == 1)
+							out.print("<td>" + "男" + "</td>");
+						else
+							out.print("<td>" + "女" + "</td>");
+
+						//out.print("<td>" + rs.getInt("arrival") + "</td>");
+
+						switch (rs.getInt("status")) {
+						case 0:
+							out.print("<td>" + "未掛號" + "</td>");
+							break;
+						case 1:
+							out.print("<td>" + "尚未報到" + "</td>");
+							break;
+						case 2:
+							out.print("<td>" + "已報到" + "</td>");
+							break;
+						case 3:
+							out.print("<td>" + "看診完畢" + "</td>");
+							break;
+						case 4:
+							out.print("<td>" + "過號" + "</td>");
+							break;
+						}
 					}
-				%>
+
+				}
+			%>
 		</table>
 	</div>
 
-	<div style="text-align: center;"><!--看診名單資訊-->
+	<div style="text-align: center;">
+		<!--看診名單資訊-->
 		<p style="font-size: 25px">看診名單</p>
-		<table class="table_form" rules="all">
+
+		<input type="button" id="button_hidden" value="隱藏"
+			onclick="do_hidden()" style="margin: 15px;">
+		<table class="table_form" rules="all" id="p_list">
 			<tr>
 				<td width="5%">序號</td>
 				<td width="15%">姓名</td>
@@ -174,72 +216,71 @@
 				<td width="5%">狀態</td>
 			</tr>
 			<%
-					query = "select * from test.register";
-					rs = null;
+				query = "select * from test.register";
+				rs = null;
 
-					stmt = conn.createStatement();
-					rs = stmt.executeQuery(query);
-					while (rs.next()) {
+				stmt = conn.createStatement();
+				rs = stmt.executeQuery(query);
+				while (rs.next()) {
 
-						if (rs.getInt("status") != 0) {
-							out.print("<tr>");
+					if (rs.getInt("status") != 0) {
+						out.print("<tr>");
 
-							out.print("<td>" + rs.getInt("no") + "</td>");
-							out.print("<td>" + rs.getString("name") + "</td>");
-							out.print("<td>" + rs.getString("id") + "</td>");
-							out.print("<td>" + rs.getString("b_year") + "\t年\t" + rs.getString("b_month") + "\t月\t"
-									+ rs.getString("b_day") + "\t日" + "</td>");
+						out.print("<td>" + rs.getInt("no") + "</td>");
+						out.print("<td>" + rs.getString("name") + "</td>");
+						out.print("<td>" + rs.getString("id") + "</td>");
+						out.print("<td>" + rs.getString("b_year") + "\t年\t" + rs.getString("b_month") + "\t月\t"
+								+ rs.getString("b_day") + "\t日" + "</td>");
 
-							//out.print("<td>" + rs.getInt("blood_type") + "</td>");
+						//out.print("<td>" + rs.getInt("blood_type") + "</td>");
 
-							switch (rs.getInt("blood_type")) {
-							case 1:
-								out.print("<td>" + "A" + "</td>");
-								break;
-							case 2:
-								out.print("<td>" + "B" + "</td>");
-								break;
-							case 3:
-								out.print("<td>" + "O" + "</td>");
-								break;
-							case 4:
-								out.print("<td>" + "AB" + "</td>");
-								break;
-							}
+						switch (rs.getInt("blood_type")) {
+						case 1:
+							out.print("<td>" + "A" + "</td>");
+							break;
+						case 2:
+							out.print("<td>" + "B" + "</td>");
+							break;
+						case 3:
+							out.print("<td>" + "O" + "</td>");
+							break;
+						case 4:
+							out.print("<td>" + "AB" + "</td>");
+							break;
+						}
 
-							//out.print("<td>" + rs.getInt("gender") + "</td>");
+						//out.print("<td>" + rs.getInt("gender") + "</td>");
 
-							if (rs.getInt("gender") == 1)
-								out.print("<td>" + "男" + "</td>");
-							else
-								out.print("<td>" + "女" + "</td>");
+						if (rs.getInt("gender") == 1)
+							out.print("<td>" + "男" + "</td>");
+						else
+							out.print("<td>" + "女" + "</td>");
 
-							//out.print("<td>" + rs.getInt("arrival") + "</td>");
+						//out.print("<td>" + rs.getInt("arrival") + "</td>");
 
-							switch (rs.getInt("status")) {
-							case 0:
-								out.print("<td>" + "未掛號" + "</td>");
-								break;
-							case 1:
-								out.print("<td>" + "尚未報到" + "</td>");
-								break;
-							case 2:
-								out.print("<td>" + "已報到" + "</td>");
-								break;
-							case 3:
-								out.print("<td>" + "看診完畢" + "</td>");
-								break;
-							case 4:
-								out.print("<td>" + "過號" + "</td>");
-								break;
-							}
-
+						switch (rs.getInt("status")) {
+						case 0:
+							out.print("<td>" + "未掛號" + "</td>");
+							break;
+						case 1:
+							out.print("<td>" + "尚未報到" + "</td>");
+							break;
+						case 2:
+							out.print("<td>" + "已報到" + "</td>");
+							break;
+						case 3:
+							out.print("<td>" + "看診完畢" + "</td>");
+							break;
+						case 4:
+							out.print("<td>" + "過號" + "</td>");
+							break;
 						}
 
 					}
-				%>
+
+				}
+			%>
 		</table>
 	</div>
-
 </body>
 </html>
