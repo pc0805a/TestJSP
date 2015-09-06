@@ -49,13 +49,25 @@
 
 	else if (c_flag == 1) {//控制叫號
 
-		if (p_no >= p_count - 1) {
+		if (p_no >= p_count - 1) {//看到最後一位病人
+			
+			query = "update test.allpatients set status=3 where id=\"" + p_id + "\";";//設置狀態為看診完畢(3)
+			stmt.executeUpdate(query);
+			query = "update test.register set status=3 where id=\"" + p_id + "\";";
+			stmt.executeUpdate(query);
+			
 			out.println("<SCRIPT LANGUAGE='JavaScript'>");
 			out.println("<!--");
 			out.println("alert('沒有下一位病人, 已經全部看診完畢')");
 			out.println("//-->");
 			out.println("</SCRIPT>");
 		} else {
+			
+			query = "update test.allpatients set status=3 where id=\"" + p_id + "\";";//設置狀態為看診完畢(3)
+			stmt.executeUpdate(query);
+			query = "update test.register set status=3 where id=\"" + p_id + "\";";
+			stmt.executeUpdate(query);
+			
 			query = "update test.clinic set p_no=p_no+1;";
 			stmt.executeUpdate(query);
 
@@ -69,14 +81,20 @@
 	} else if (c_flag == 3) //過號
 	{
 
-		if (p_no >= p_count - 1) {
+		if (p_no >= p_count - 1) {//看到最後一位病人
+			
+			query = "update test.allpatients set status=4 where id=\"" + p_id + "\";";//設置狀態為過號(4)
+			stmt.executeUpdate(query);
+			query = "update test.register set status=4 where id=\"" + p_id + "\";";
+			stmt.executeUpdate(query);
+			
 			out.println("<SCRIPT LANGUAGE='JavaScript'>");
 			out.println("<!--");
 			out.println("alert('沒有下一位病人, 已經全部看診完畢')");
 			out.println("//-->");
 			out.println("</SCRIPT>");
 		} else {
-			query = "update test.allpatients set status=4 where id=\"" + p_id + "\";";
+			query = "update test.allpatients set status=4 where id=\"" + p_id + "\";";//設置狀態為過號(4)
 			stmt.executeUpdate(query);
 			query = "update test.register set status=4 where id=\"" + p_id + "\";";
 			stmt.executeUpdate(query);
