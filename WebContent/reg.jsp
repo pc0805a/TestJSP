@@ -52,7 +52,8 @@
 
 		<h1>掛號名單</h1>
 		<form action="report.jsp" method="post">
-			<input type="submit" value="確定報到" class="button">
+		<div style="margin: 20px"><input type="submit" value="確定報到" class="button"></div>
+			
 			<table class="table_form" rules="all">
 				<tr>
 					<td width="5%">序號</td>

@@ -26,7 +26,7 @@
 	</div>
 	<div class="buttonContainer">
 		<button type="button" class="menuButton"
-			onclick="window.location.href='TestPage3.jsp'">診間叫號</button>
+			onclick="window.location.href='announce.jsp'">診間叫號</button>
 	</div>
 	<div class="buttonContainer">
 		<button type="button" class="menuButton"
